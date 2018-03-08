@@ -1,0 +1,11 @@
+*.org~
+*.asd~
+*.lisp~
+*.ros~
+*.dockerfile~
+*.json~
+*.txt~
+*.gitignore~
+.DS_Store
+/deprecated
+/data
