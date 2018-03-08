@@ -5,8 +5,7 @@
   :serial t
   :components ((:file "src/packages")
 	       (:file "src/classes")
-	       (:file "src/preprocess") 
-	       (:file "src/hmm"))
+	       (:file "src/process"))
   :depends-on (:alexandria
 	       :asclepius-tools
 	       :inferior-shell 

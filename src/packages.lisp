@@ -2,33 +2,29 @@
 
 (defpackage #:yoshino.classes
   (:use #:cl #:alexandria)
-  (:export "MODEL"
-	   "W2V"
-	   "HMM"
-	   "DIC"
-	   "VEC"
-	   "CLU"
-	   "CEN"
-	   "RUL"
-	   "Q-A"
+  (:export "NEIGHBOUR"
 	   "WORD"
-	   "STR"
-	   "XPH"
+	   "YOSHINO"
+	   
+	   "LBL" 
 	   "FRQ"
 	   "NGH"
-	   "NEIGHBOUR"
-	   "WRD"))
+	   "XPH"
+	   "RUL"
+	   "VEC"
+	   "CEN"))
 
-(defpackage #:yoshino.preprocess
+(defpackage #:yoshino.process
   (:use #:cl #:alexandria
 	#:asclepius.tools
 	#:yoshino.classes)
   (:export "LOAD-FILE" 
 	   "TAG-TEXT"
 	   "CHUNK-TEXT"
+	   "GENERATE-WORDS"
+	   "CONNECT-WORDS"
+	   "SEGMENT-FORMULAS"
+	   "GENERATE-FORMULAS"
 	   "PROCESS-TEXT"
 	   "FIND-NAMED-WORD"
 	   "WINDOW"))
-
-(defpackage #:yoshino.hmm
-  (:use #:cl #:alexandria))
