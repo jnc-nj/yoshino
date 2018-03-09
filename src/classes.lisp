@@ -8,7 +8,9 @@
 (defclass word (neighbour)
   ((xph :initarg :xph :initform nil)
    (rul :initarg :rul :initform nil)
-   (vec :initarg :vec :initform nil)))
+   (vec :initarg :vec :initform nil)
+   (pre :initarg :pre :initform nil)))
 
 (defclass yoshino (word)
-  ((cen :initarg :cen :initform nil)))
+  ((cen :initarg :cen :initform nil)
+   (clu :initarg :clu :initform nil)))

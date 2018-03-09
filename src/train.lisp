@@ -1,24 +1,4 @@
-(in-package #:yoshino.process)
-
-(defmethod sample (bow (model yoshino))
-  (shift-centroid bow model) 
-  )
-
-(defmethod shift-centroid (bow (model yoshino))
-  (with-slots (lbl cen) model
-    (let ((divisor (+ 1 (length bow)))
-	  (vectors (list cen)))
-      (loop for item in bow
-	 for found = (find-named-word item lbl)
-	 do (when found (with-slots (vec) found
-			  (push vec vectors))))
-      (setf cen (map 'vector #'(lambda (n) (/ n divisor))
-		     (apply #'map 'vector #'+ vectors))))))
-
-(defmethod sample-words (tags (model yoshino))
-  (with-slots (lbl cen) model
-    (loop for tag in (remove-duplicates tags :test 'string=) 
-       for sorted = (filter-words tag cen words (count tag tags :test 'string=)))))
+(in-package #:yoshino.train)
 
 (defmethod calculate-vector (n lbl (model word))
   (let ((vector (make-array n :initial-element 0)))
@@ -29,16 +9,6 @@
 	    (incf (aref vector (find-named-position local-lbl lbl))
 		  frq)))))
     vector))
-
-(defmethod word-type ((model word))
-  (with-slots (xph) model
-    (with-slots (lbl) xph
-      lbl)))
-
-(defun filter-words (tag centroid words count)
-  (let ((sequence (sort (remove-if-not #'(lambda (arg) (string= tag (word-type arg))) words)
-			#'> #'(lambda (arg) (with-slots (vec) arg (cos-similarity vec centroid))))))
-    (subseq sequence 0 (when (< count (length sequence)) count))))
 
 (defun load-file (path)
   "Load text file from path and return string."
@@ -142,6 +112,35 @@
 		   :lbl word-objects
 		   :cen (make-array (length word-objects)
 				    :initial-element 0))))
+
+(defmethod generate-clusters ((model yoshino) &key threshold)
+  (with-info "Generating clusters"
+    (with-slots (lbl clu) model
+      (let ((i 0)
+	    seen)
+	(dolist (source lbl)
+	  (unless (member source seen)
+	    (let ((similar-words (similar-words source lbl threshold)))
+	      (push (make-instance 'word
+				   :lbl similar-words
+				   :vec (average-vectors
+					 (get-vectors similar-words)))
+		    clu)
+	      (push source seen)))
+	  (format t "done: ~d/~d~%" (incf i) (length lbl)))))))
+
+(defun similar-words (source words threshold)
+  (remove-if-not
+   #'(lambda (target)
+       (with-slots ((source-vec vec)) source
+	 (with-slots ((target-vec vec)) target
+	   (> (cos-similarity source-vec target-vec)
+	      threshold))))
+   words))
+
+(defun get-vectors (words)
+  (loop for word in words
+     collect (with-slots (vec) word vec)))
 
 (defun find-named-word (name words &key (test 'string=))
   (dolist (word words)

@@ -12,13 +12,16 @@
 	   "XPH"
 	   "RUL"
 	   "VEC"
-	   "CEN"))
+	   "PRE"
+	   "CEN"
+	   "CLU"))
 
-(defpackage #:yoshino.process
+(defpackage #:yoshino.train
   (:use #:cl #:alexandria
 	#:asclepius.tools
 	#:yoshino.classes)
-  (:export "LOAD-FILE" 
+  (:export "CALCULATE-VECTOR"
+	   "LOAD-FILE" 
 	   "TAG-TEXT"
 	   "CHUNK-TEXT"
 	   "GENERATE-WORDS"
@@ -28,3 +31,22 @@
 	   "PROCESS-TEXT"
 	   "FIND-NAMED-WORD"
 	   "WINDOW"))
+
+(defpackage #:yoshino.sample
+  (:use #:cl #:alexandria
+	#:asclepius.tools
+	#:yoshino.classes
+	#:yoshino.train)
+  (:export "SAMPLE"
+	   "SHIFT-CENTROID"
+	   "SAMPLE-WORDS" 
+	   "WORD-TYPE"
+	   "FILTER-WORDS"))
+
+(defpackage #:yoshino.dev
+  (:nicknames #:yoshino/dev)
+  (:use #:cl #:alexandria
+	#:asclepius.tools
+	#:yoshino.classes
+	#:yoshino.train
+	#:yoshino.sample))
