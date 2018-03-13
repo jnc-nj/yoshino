@@ -15,7 +15,8 @@
   ((cen :initarg :cen :initform nil)
    (clu :initarg :clu :initform nil)))
 
-
-;;yoshino -> lbl, xph, rul, cen
+;;yoshino -> lbl, xph, rul, cen, clu
 ;;word -> lbl, frq, ngh, xph, vec, pre
-
+;;xphrase -> lbl, frq, ngh, rul, vec
+;;rule -> lbl, frq, ngh
+;;neighbour -> lbl, frq, ngh

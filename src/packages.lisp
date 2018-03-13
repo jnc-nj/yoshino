@@ -36,6 +36,8 @@
 	   "PROCESS-TEXT" 
 	   "SIMILAR-WORDS"
 	   "GET-VECTORS"
+	   "GET-FREQUENCIES"
+	   "GET-LABELS"
 	   "FIND-NAMED-WORD"
 	   "FIND-NAMED-POSITION"))
 
@@ -46,9 +48,13 @@
 	#:yoshino.train)
   (:export "SAMPLE"
 	   "SHIFT-CENTROID"
-	   "SAMPLE-WORDS" 
+	   "SAMPLE-WORDS"
+	   "SAMPLE-FORMULA"
+	   "CLOSEST-FORMULA"
+	   "FORMULA-SIMILARITY"
 	   "WORD-TYPE"
-	   "FILTER-WORDS"))
+	   "FILTER-WORDS"
+	   "WEIGHTED-RANDOM"))
 
 (defpackage #:yoshino.dev
   (:nicknames #:yoshino/dev)

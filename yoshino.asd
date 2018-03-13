@@ -13,4 +13,5 @@
 	       :cl-ppcre
 	       :ltk
 	       :lparallel
-	       :burgled-batteries))
+	       :burgled-batteries
+	       :bordeaux-threads))
