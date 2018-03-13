@@ -11,4 +11,6 @@
 	       :asclepius-tools
 	       :inferior-shell 
 	       :cl-ppcre
-	       :ltk))
+	       :ltk
+	       :lparallel
+	       :burgled-batteries))

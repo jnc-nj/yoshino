@@ -1,5 +1,22 @@
 (in-package #:yoshino.train)
 
+(defvar *burgled?* nil)
+
+(defmethod generate-clusters ((model yoshino) &key threshold)
+  (with-info "Generating clusters"
+    (with-slots (lbl clu) model
+      (let ((i 0) seen)
+	(dolist (source lbl)
+	  (let ((similar-words (similar-words source lbl threshold)))
+	    (unless (member similar-words seen :test 'equal)
+	      (push (make-instance 'word
+				   :lbl similar-words
+				   :vec (average-vectors
+					 (get-vectors similar-words)))
+		    clu)
+	      (push similar-words seen)))
+	  (format t "done: ~d/~d~%" (incf i) (length lbl)))))))
+
 (defmethod calculate-vector (n lbl (model word))
   (let ((vector (make-array n :initial-element 0)))
     (with-slots (ngh) model
@@ -17,15 +34,34 @@
       (read-sequence data stream)
       data)))
 
-(defun tag-text (raw-path &key (language "English") (window 5))
+(defun burgle-batteries ()
+  (unless *burgled?*
+    (with-info "Starting NLTK"
+      (burgled-batteries:startup-python)
+      (burgled-batteries:import "sys")
+      (burgled-batteries:run "sys.path.append('/usr/local/lib/python3.6/site-packages/')")
+      (burgled-batteries:import "nltk")
+      (burgled-batteries:run "nltk.download('punkt')")
+      (burgled-batteries:run "nltk.download('averaged_perceptron_tagger')")
+      (setf *burgled?* t))))
+
+(defun tag-words (str)
+  "Return parts of speech of tokenized str."  
+  (burgle-batteries)
+  (coerce (burgled-batteries:run
+	   (format nil "nltk.pos_tag(nltk.word_tokenize('~d'.decode('utf-8')))"
+		   (cl-ppcre:regex-replace-all "[\\W]" str " ")))
+          'list))
+
+(defun tag-text (raw-path &key (window 5) (file-root "../Models/UniPOS/UD_English/en-upos"))
   (let* ((path "~/.roswell/local-projects/yoshino/data")
 	 (text-path (format nil "~d/~d" path raw-path)))
     (with-info "Tagging text"
       (inferior-shell:run/nil
-       (format nil "cd ~d && python RDRPOSTAGGER.py tag ~d ~d ~d" 
+       (format nil "cd ~d && python2 RDRPOSTAGGER.py tag ~d ~d ~d" 
 	       (pathname (format nil "~d/tagger/pSCRDRtagger/" path))
-	       (pathname (format nil "../Models/POS/~d.RDR" language))
-	       (pathname (format nil "../Models/POS/~d.DICT" language))
+	       (pathname (format nil "~d.RDR" file-root))
+	       (pathname (format nil "~d.DICT" file-root))
 	       (pathname text-path))))
     (process-text (load-file (format nil "~d.TAGGED" text-path))
 		  :window window)))
@@ -112,22 +148,6 @@
 		   :lbl word-objects
 		   :cen (make-array (length word-objects)
 				    :initial-element 0))))
-
-(defmethod generate-clusters ((model yoshino) &key threshold)
-  (with-info "Generating clusters"
-    (with-slots (lbl clu) model
-      (let ((i 0)
-	    seen)
-	(dolist (source lbl)
-	  (unless (member source seen)
-	    (let ((similar-words (similar-words source lbl threshold)))
-	      (push (make-instance 'word
-				   :lbl similar-words
-				   :vec (average-vectors
-					 (get-vectors similar-words)))
-		    clu)
-	      (push source seen)))
-	  (format t "done: ~d/~d~%" (incf i) (length lbl)))))))
 
 (defun similar-words (source words threshold)
   (remove-if-not

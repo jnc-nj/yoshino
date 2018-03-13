@@ -1,8 +1,11 @@
 (in-package #:yoshino.sample)
 
-(defmethod sample (bow (model yoshino))
-  (shift-centroid bow model) 
-  )
+(defmethod sample (sentence (model yoshino))
+  (let* ((bow (cl-ppcre:split "[\\s]" sentence))
+	 (xps (loop for item in split collect (tag-word item model))))
+    (shift-centroid bow model)
+    (let ((bow-samples (loop for item in xps collect (sample-words item model)))
+	  (xps-samples )))))
 
 (defmethod shift-centroid (bow (model yoshino))
   (with-slots (lbl cen) model
@@ -21,6 +24,8 @@
   (with-slots (lbl cen) model
     (loop for tag in (remove-duplicates tags :test 'string=) 
        collect (filter-words tag cen lbl (count tag tags :test 'string=)))))
+
+(defmethod sample-formula (tags))
 
 (defmethod word-type ((model word))
   (with-slots (xph) model

@@ -11,7 +11,7 @@
 	   "NGH"
 	   "XPH"
 	   "RUL"
-	   "VEC"
+	   "VEC" 
 	   "PRE"
 	   "CEN"
 	   "CLU"))
@@ -20,17 +20,24 @@
   (:use #:cl #:alexandria
 	#:asclepius.tools
 	#:yoshino.classes)
-  (:export "CALCULATE-VECTOR"
-	   "LOAD-FILE" 
+  (:export "*BURGLED?*"
+	   "GENERATE-CLUSTERS"
+	   "CALCULATE-VECTOR"
+	   "LOAD-FILE"
+	   "BURGLE-BATTERIES"
+	   "TAG-WORDS"
 	   "TAG-TEXT"
 	   "CHUNK-TEXT"
 	   "GENERATE-WORDS"
 	   "CONNECT-WORDS"
+	   "GENERATE-VECTORS"
 	   "SEGMENT-FORMULAS"
 	   "GENERATE-FORMULAS"
-	   "PROCESS-TEXT"
+	   "PROCESS-TEXT" 
+	   "SIMILAR-WORDS"
+	   "GET-VECTORS"
 	   "FIND-NAMED-WORD"
-	   "WINDOW"))
+	   "FIND-NAMED-POSITION"))
 
 (defpackage #:yoshino.sample
   (:use #:cl #:alexandria

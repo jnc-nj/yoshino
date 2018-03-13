@@ -14,3 +14,8 @@
 (defclass yoshino (word)
   ((cen :initarg :cen :initform nil)
    (clu :initarg :clu :initform nil)))
+
+
+;;yoshino -> lbl, xph, rul, cen
+;;word -> lbl, frq, ngh, xph, vec, pre
+
