@@ -55,7 +55,7 @@
 		   (cl-ppcre:regex-replace-all "[\\W]" str " ")))
           'list))
 
-(defun tag-text (raw-path &key (window 5) (threshold 0.8))
+(defun tag-text (raw-path &key (window 3) (threshold 0.8))
   (let* ((path "~/.roswell/local-projects/yoshino/data")
 	 (text-path (format nil "~d/~d" path raw-path)))
     (with-info "Tagging text"
@@ -98,7 +98,7 @@
 		 (let ((found (window window lbl words :test test)))
 		   (dolist (item (remove-duplicates found :test test))
 		     (push (make-instance 'neighbour
-					  :lbl (find-named-word item word-objects :test test)
+					  :lbl (find-named-word item word-objects :test test) 
 					  :frq (count item found :test test))
 			   ngh))))))
       (lparallel:pmap nil #'connect word-objects))))
